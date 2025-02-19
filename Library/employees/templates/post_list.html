@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+</head>
+<body>
+    <h1>Employees</h1>
+    <ul>
+        {% for post in posts %}
+        <li>{{ post.title }} - {{ post.created_at }}</li>
+        {% endfor %}
+    </ul>
+       
+</body>
+</html>
