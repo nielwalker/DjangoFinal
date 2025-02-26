@@ -1,0 +1,37 @@
+{% extends 'lms/home_base.html' %}
+{% block content %}
+
+<section style="margin-top: 100px;" id="team">
+  <section class="container">
+    <div class="section-header">
+      <h3>Enter Course Basic Details:</h3>
+      <br>
+    </div>
+    <center>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4>Please Choose a best landing Image for your course!</h4>
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4">
+            <p>{{ form.course_image }}</p>
+          </div>
+          <div class="col-md-4"></div>
+        </div>
+        <h4>Enter a best description for your course!</h4>
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-6">
+            <p><h5>{{ form.course_desc }}</h5></p>
+          </div>
+          <div class="col-md-3"></div>
+        </div>
+        {{ form.user }}
+        {{ form.course_info }}
+        <input type="submit" class="btn btn-primary">
+      </form>
+    </center>
+  </section>
+</section>
+
+{% endblock %}

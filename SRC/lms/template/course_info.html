@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<section style="margin-top: 100px;" id="team">
+  <section class="container">
+    <div class="section-header">
+      <h3>Enter Course Details:</h3>
+      <br>
+    </div>
+    <center>
+      <h4>What could be an interesting title for your course!</h4>
+      <h6>It's ok if you can't think of a good title now. You can change it later!</h6>
+      <form method="POST" action="{% url 'lms:course_info' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.course_name }}</p>
+        <h4>Which category relates to your course!</h4>
+        <p><h5>{{ form.category }}</h5></p>
+        {{ form.user }}
+        <input type="submit" class="btn btn-primary">
+      </form>
+    </center>
+  </section>
+</section>
+
+<br>
+<div class="section-header">
+  <h3>Courses By You:</h3>
+  <br>
+</div>
+<div class="row">
+  {% if course_details %}
+  {% for details in course_details %}
+  <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+    <div class="member">
+      <img src="{{ details.course_image.url }}" class="" alt="" height="254" width="100%">
+      {{ details.course_info.course_name }}
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <center><h4>OOps, You haven't created any course yet! Maybe your'e confused that which course I should create first on such an interesting platform!</h4></center>
+  {% endif %}
+</div>
+{% endblock content %}
