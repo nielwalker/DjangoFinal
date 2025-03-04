@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages, auth
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from .forms import *
 from django.forms import inlineformset_factory, modelformset_factory
 from django.http import Http404, HttpResponseRedirect, \
