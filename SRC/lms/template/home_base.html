@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/
+p.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>GKTCS Innovations</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    Hello, {{ user.first_name }}
+    <a href="{% url 'lms:logout' %}">Logout</a> &nbsp;
+    {% else %}
+    <a href="{% url 'lms:login' %}">Login</a> &nbsp;
+    <a href="{% url 'lms:user_registration' %}">SignUp</a> &nbsp;
+    {% endif %}
+</body>
+</html>
