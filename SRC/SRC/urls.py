@@ -15,20 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from lms.template import *
+from django.urls import path, include
+from lms.templates import *
 from lms.views import *
 
 app_name = 'lms'
 
 urlpatterns = [
-    path('', home, name="home"),
-    path('user_registration', user_registration, name="user_registration"),
-    path('login', login, name="login"),
-    path('logout', logout, name="logout"),
-    path('course_info', course_info, name="course_info"),
-    path('course_details/<str:course_slug>', course_details, name="course_details"),
-    path('course_basic_details/<str:course_slug>', course_basic_details, name="course_basic_details"),
-    path('trainer_registration', trainer_registration, name="trainer_registration"),
-    path('learn_as_trainer', learn_as_trainer, name="learn_as_trainer"),
+    path('admin/', admin.site.urls),
+    path('home/', home, name="home"),
+    path('user_registration/', user_registration, name="user_registration"),
+    path('login/', login, name="login"),
+    path('logout/', logout, name="logout"),
+    path('course_info/', course_info, name="course_info"),
+    path('course_details/<str:course_slug>/', course_details, name="course_details"),
+    path('course_basic_details/<str:course_slug>/', course_basic_details, name="course_basic_details"),
+    path('trainer_registration/', trainer_registration, name="trainer_registration"),
+    path('learn_as_trainer/', learn_as_trainer, name="learn_as_trainer"),
 ]

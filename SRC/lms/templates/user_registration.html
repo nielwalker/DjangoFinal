@@ -8,7 +8,7 @@
 </head>
 <body>
     <h2>User Registration</h2>
-    <form method="POST" action="{% url 'lms:user_registration' %}">
+    <form method="POST" action="{% url 'user_registration' %}">
         {% csrf_token %}
         <label for="first_name">First Name:</label>
         <input type="text" id="first_name" name="first_name" required><br>

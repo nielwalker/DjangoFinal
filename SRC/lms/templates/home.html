@@ -11,10 +11,10 @@
     <div class="container">
         {% if user.is_authenticated %}
             <p>Hello, {{ user.first_name }}</p>
-            <a href="{% url 'lms:logout' %}" class="btn btn-primary">Logout</a>
+            <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
         {% else %}
-            <a href="{% url 'lms:login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'lms:user_registration' %}" class="btn btn-secondary">SignUp</a>
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            <a href="{% url 'user_registration' %}" class="btn btn-secondary">SignUp</a>
         {% endif %}
     </div>
 
