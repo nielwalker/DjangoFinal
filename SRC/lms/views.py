@@ -151,11 +151,11 @@ def trainer_registration(request):
                     last_name=last_name,
                     email=email,
                     password=password1
-                    user.is_staff = True
-                    user.save()
-                    trainer_registration = TrainerRegistration.objects.create(user=user, status=False)
-                    return redirect('lms:login')
                 )
+                user.is_staff = True
+                user.save()
+                trainer_registration = TrainerRegistration.objects.create(user=user, status=False)
+                return redirect('lms:login')
         else:
             print('Passwords do not match')
             return redirect('lms:trainer_registration')
