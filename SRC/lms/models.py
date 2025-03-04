@@ -25,6 +25,9 @@ class CourseInfo(models.Model):
     def __str__(self):
         return self.course_name
 
+def course_slug(instance):
+    return instance.course_name.lower().replace(' ', '-')
+
 def course_slug_generator(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = course_slug(instance)
