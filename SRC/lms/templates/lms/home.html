@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <!-- Load static template tag -->
+    {% load static %}
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Include custom CSS file -->
+    <link rel="stylesheet" href="{% static 'lms/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="mainbody">
+            <h1 id="welcometext">Welcome!</h1>
+            {% if user.is_authenticated %}
+                <p>Hello, {{ user.first_name }}</p>
+                <a href="{% url 'lms:logout' %}" class="btn btn-primary">Logout</a>
+                <a href="{% url 'lms:register_as_trainer' %}" class="btn btn-secondary">Register as Trainer</a>
+            {% else %}
+                <a href="{% url 'lms:login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'lms:user_registration' %}" class="btn btn-secondary">SignUp</a>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

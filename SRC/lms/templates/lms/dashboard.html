@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'lms/styles.css' %}">
+</head>
+<body>
+    <header class="container">
+        <h1>Dashboard</h1>
+        <nav>
+            <a href="{% url 'lms:course_details' course_slug='your_course_slug' %}">Course Management</a>
+            <a href="#">User Management</a>
+            <a href="#">Trainer Applications</a>
+            <a href="#">Reports</a>
+            <a href="#">Site Settings</a>
+            <a href="{% url 'lms:logout' %}" class="logout-btn">Logout</a>
+        </nav>
+    </header>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

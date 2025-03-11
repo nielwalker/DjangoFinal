@@ -1,10 +1,21 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
-from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib import messages, auth
 from .forms import CourseInfoForm, CourseDetailsForm
 from .models import CourseInfo, CourseDetails, TrainerRegistration
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+@login_required
+def logout_view(request):
+    logger.info(f"User {request.user.username} has logged out.")
+    auth.logout(request)
+    return redirect('lms:home')
 
 def course_info(request):
     user = request.user
@@ -13,7 +24,7 @@ def course_info(request):
         form = CourseInfoForm(request.POST, request.FILES)
         if form.is_valid():  # Form cleaning & Validation
             new_course = form.save()
-            return HttpResponseRedirect(reverse('course_details.html', args=(new_course.slug,)))
+            return HttpResponseRedirect(reverse('lms:course_details', args=[new_course.slug]))
 
     form = CourseInfoForm(initial={"user": user})
 
@@ -22,15 +33,15 @@ def course_info(request):
     trainer_registration_details = TrainerRegistration.objects.filter(user=user)
 
     for details in trainer_registration_details:
-        if details.status:
+        if any(details.status for details in trainer_registration_details):
             context = {
                 "form": form,
                 "course_info": course_info,
                 "course_details": course_details,
             }
-            return render(request, 'course_info.html', context)
-        else:
-            return render(request, 'learn_as_trainer.html')
+            return render(request, 'lms/course_info.html', context)
+
+    return render(request, 'lms/learn_as_trainer.html')
 
 def course_details(request, course_slug):
     course_info = CourseInfo.objects.get(slug=course_slug)
@@ -39,7 +50,7 @@ def course_details(request, course_slug):
         "course_slug": course_slug,
         "course_info": course_info,
     }
-    return render(request, 'course_details.html', context)
+    return render(request, 'lms/course_details.html', context)
 
 def course_basic_details(request, course_slug):
     user = request.user
@@ -49,7 +60,7 @@ def course_basic_details(request, course_slug):
         form = CourseDetailsForm(request.POST, request.FILES)
         if form.is_valid():  # Form cleaning & Validation
             form.save()
-            return HttpResponseRedirect(reverse('course_details.html', args=(course_slug,)))
+            return HttpResponseRedirect(reverse('lms:course_details', args=[course_slug]))
 
     form = CourseDetailsForm(initial={'course_info': course_info, 'user': user})
 
@@ -58,10 +69,10 @@ def course_basic_details(request, course_slug):
         "course_info": course_info,
         "form": form,
     }
-    return render(request, 'course_basic_details.html', context)
+    return render(request, 'lms/course_basic_details.html', context)
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'lms/home.html')
 
 def user_registration(request):
     if request.method == 'POST':
@@ -75,13 +86,13 @@ def user_registration(request):
 
         if User.objects.filter(username=user_name).exists():
             messages.error(request, 'Username Taken')
-            return redirect('user_registration.html')
+            return render(request, 'lms/user_registration.html')
         elif User.objects.filter(email=email).exists():
             messages.error(request, 'Email Taken')
-            return redirect('user_registration.html')
+            return render(request, 'lms/user_registration.html')
         elif password1 != password2:
             messages.error(request, 'Passwords do not match')
-            return redirect('user_registration.html')
+            return render(request, 'lms/user_registration.html')
         else:
             user = User.objects.create_user(
                 username=user_name,
@@ -92,9 +103,19 @@ def user_registration(request):
             )
             user.save()
             messages.success(request, 'User registered successfully')
-            return redirect('login.html')
+            return redirect('lms:login')
     else:
-        return render(request, 'user_registration.html')
+        return render(request, 'lms/user_registration.html')
+
+def dashboard(request):
+    total_users = User.objects.count()
+    recent_users = User.objects.order_by('-date_joined')[:5]  # Get last 5 users
+
+    context = {
+        'total_users': total_users,
+        'recent_users': recent_users,
+    }
+    return render(request, 'lms/dashboard.html', context)
 
 def login(request):
     if request.method == 'POST':
@@ -104,12 +125,15 @@ def login(request):
         user = auth.authenticate(username=user_name, password=password)
         if user is not None:
             auth.login(request, user)
-            return redirect('dashboard.html')
+            return redirect('lms:dashboard')  # Corrected redirect
         else:
             messages.error(request, 'Invalid credentials')
-            return redirect('login.html')
+            return redirect('lms:login')
     else:
-        return render(request, 'login.html')
+        return render(request, 'lms/login.html')
+
+def back_btn(request):
+    return render(request, 'lms/home.html')
 
 def logout(request):
     auth.logout(request)
@@ -127,13 +151,13 @@ def trainer_registration(request):
 
         if password1 != password2:
             messages.error(request, 'Passwords do not match')
-            return redirect('trainer_registration.html')
+            return redirect('lms:trainer_registration')
         elif User.objects.filter(username=user_name).exists():
             messages.info(request, 'Username Taken')
-            return redirect('trainer_registration.html')
+            return redirect('lms:trainer_registration')
         elif User.objects.filter(email=email).exists():
             messages.info(request, 'Email Taken')
-            return redirect('trainer_registration.html')
+            return redirect('lms:trainer_registration')
         else:
             user = User.objects.create_user(
                 username=user_name,
@@ -145,13 +169,29 @@ def trainer_registration(request):
             user.is_staff = True
             user.save()
             TrainerRegistration.objects.create(user=user, status=False)
-            return redirect('login.html')
+            return redirect('lms:login')
     else:
-        return render(request, 'trainer_registration.html')
+        return render(request, 'lms/trainer_registration.html')
 
 def learn_as_trainer(request):
     user = request.user
-    TrainerRegistration.objects.create(user=user, status=False)
+    trainer, created = TrainerRegistration.objects.get_or_create(user=user)
+    if created:
+        trainer.status = False
+        trainer.save()
+
     user.is_staff = True
     user.save()
-    return render(request, 'learn_as_trainer.html')
+    return render(request, 'lms/learn_as_trainer.html')
+
+@login_required
+def register_as_trainer(request):
+    user = request.user
+    if not user.is_staff:
+        user.is_staff = True
+        user.save()
+        TrainerRegistration.objects.create(user=user, status=True)
+        messages.success(request, 'You have been registered as a trainer.')
+    else:
+        messages.info(request, 'You are already registered as a trainer.')
+    return redirect('lms:home')
