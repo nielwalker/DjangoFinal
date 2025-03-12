@@ -32,6 +32,9 @@ def course_slug_generator(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = course_slug(instance)
 
+
+
+
 pre_save.connect(course_slug_generator, sender=CourseInfo)
 
 class CourseDetails(models.Model):

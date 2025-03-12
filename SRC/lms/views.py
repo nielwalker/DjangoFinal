@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User,auth
 from django.contrib import messages
 from .forms import CourseInfoForm, CourseDetailsForm
 from .models import CourseInfo, CourseDetails, TrainerRegistration
@@ -109,11 +109,11 @@ def login(request):
             messages.error(request, 'Invalid credentials')
             return redirect('login.html')
     else:
-        return render(request, 'login.html')
+        return render(request, 'dashboard.html')
 
 def logout(request):
     auth.logout(request)
-    return redirect('/')
+    return redirect('')
 
 def trainer_registration(request):
     if request.method == 'POST':
